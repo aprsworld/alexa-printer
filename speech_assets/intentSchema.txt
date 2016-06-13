@@ -1,0 +1,26 @@
+{
+  "intents": [
+    {
+      "intent": "printer",
+      "slots": [
+		{
+			"name": "partNo",
+			"type": "AMAZON.FOUR_DIGIT_NUMBER"
+		},
+		{
+			"name": "qty",
+			"type": "NUMBER"
+		}
+      ]
+    },
+	{
+	  "intent": "AMAZON.HelpIntent"
+	},
+	{
+	  "intent": "AMAZON.StopIntent"
+	},
+	{
+	  "intent": "AMAZON.CancelIntent"
+	}
+  ]
+}

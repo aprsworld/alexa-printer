@@ -1,0 +1,13 @@
+printer please print {partNo} times {qty}
+printer print {partNo} times {qty}
+printer please print {partNo}
+printer print {partNo}
+printer please print {qty} copies of {partNo}
+printer please print {qty} copies {partNo}
+printer print {qty} copies of {partNo}
+printer print {qty} copies {partNo}
+
+AMAZON.StopIntent stop
+AMAZON.StopIntent go away
+AMAZON.StopIntent quit
+AMAZON.StopIntent exit
