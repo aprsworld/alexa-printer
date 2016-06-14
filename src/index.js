@@ -2,7 +2,12 @@
 var http       = require('http')
   , request    = require('request')
   , AlexaSkill = require('./AlexaSkill')
-  , APP_ID     = 'amzn1.echo-sdk-ams.app.0f82ff69-f29c-499f-be38-74c8a1b58e45';
+  , APP_ID     = 'amzn1.echo-sdk-ams.app.0f82ff69-f29c-499f-be38-74c8a1b58e45'
+  , authorizedUsers = [
+	  "bob",
+	  "amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMNWY4AY66FUR7ILBWANIHQN73QHT67AIQLELNW3B5COWYCIEZEYZSBNPZA2KR2FZ2IFUNGV6LAE6ELGWWWNHQINNHZXOKGZJREOSZX63ESOV6M7ED2VYKLIK5C3DPJ2I2FP4FTOISI5WHEEHS5MEOOGQEY5KFM5YFPAZ6QBF5GTZIGMYGBOBI",
+	  "charlie"
+	  ];
 
 var resultsObj = {};
 //constructor
@@ -16,7 +21,14 @@ LabelPrinter.prototype.constructor = LabelPrinter;
 //intent handlers
 LabelPrinter.prototype.intentHandlers = {
 	"printer": function(intent, session, response){	
-		handleNextPrintRequest(intent, session, response);		
+		//check authorized user array for userId
+		if(authorizedUsers.indexOf(session.user.userId) > -1){	
+			handleNextPrintRequest(intent, session, response);		
+		}
+		else{
+			var speechOutput = "I am sorry, you are not authorized";
+			response.tell(speechOutput);
+		}
 	},
 	"AMAZON.StopIntent":function(intent, session, response){
 		var speechOutput = "Ending Session";	
@@ -47,6 +59,7 @@ var postToUrl = function(intent, session, responsetwo, callback){
 		//return "http://charlie.aprsworld.com/glabel/bin/?partNumber=APRS"+partNo+"&nCopies="+qty+"&printer=0";
 		return "http://92068.aprsworld.com:8160/glabel/bin/?partNumber=APRS"+partNo+"&nCopies="+qty+"&printer=0";
 	};
+	console.log(session.user.userId);
 	request(printUrl(partNo, qty), function ( error, response, body) {
 		//check if error
 		if(error){
