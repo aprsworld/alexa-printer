@@ -16,19 +16,10 @@ LabelPrinter.prototype.constructor = LabelPrinter;
 //intent handlers
 LabelPrinter.prototype.intentHandlers = {
 	"printer": function(intent, session, response){
-		if(parseInt(intent.slots.qty.value, 10) < 1 || typeof parseInt(intent.slots.qty.value, 10) === "undefined" || isNaN(parseInt(intent.slots.qty.value, 10))){
-			intent.slots.qty.value = 1;	
-			var speechOutput = "Printing "+intent.slots.qty.value+" copy of the label "+intent.slots.partNo.value+". You may now print another part.";
-		}
-		else{
-			var speechOutput = "Printing "+intent.slots.qty.value+" copies of the label "+intent.slots.partNo.value+". You may now print another part.";
-
-		}
+		
 		handleNextPrintRequest(intent, session, response);
-		var repromptOut = "Say another part Number or tell me to stop.";
-        response.ask(speechOutput,repromptOut);
-		response.sessionAttributes.code = resultsObj.statusCode;
-		response.sessionAttributes.error = resultsObj.error;
+		
+		
 	},
 	"AMAZON.StopIntent":function(intent, session, response){
 		var speechOutput = "Ending Session";	
@@ -48,13 +39,17 @@ LabelPrinter.prototype.intentHandlers = {
 	}
 };
 
-//our dynamic url
-var printUrl = function(partNo, qty){
-	return "http://charlie.aprsworld.com/glabel/bin/?partNumber=APRS"+partNo+"&nCopies="+qty+"&printer=0";
-};
+
 
 //function in charge of posting to the URL once the part number and qty are established via the voice command
-var postToUrl = function(partNo, qty, callback){
+var postToUrl = function(intent, session, responsetwo, callback){
+	//our dynamic url
+	var partNo = intent.slots.partNo.value;
+	var qty =  intent.slots.qty.value;
+	var printUrl = function(partNo, qty){
+		//return "http://charlie.aprsworld.com/glabel/bin/?partNumber=APRS"+partNo+"&nCopies="+qty+"&printer=0";
+		return "http://92068.aprsworld.com:8160/glabel/bin/?partNumber=APRS"+partNo+"&nCopies="+qty+"&printer=0";
+	};
 	request(printUrl(partNo, qty), function ( error, response, body) {
 		//check if error
 		if(error){
@@ -70,6 +65,16 @@ var postToUrl = function(partNo, qty, callback){
 		}
 		//nothing failed - print body
 		console.log(body);
+		if(parseInt(intent.slots.qty.value, 10) < 1 || typeof parseInt(intent.slots.qty.value, 10) === "undefined" || isNaN(parseInt(intent.slots.qty.value, 10))){
+		intent.slots.qty.value = 1;	
+			var speechOutput = "Printing "+intent.slots.qty.value+" copy of the label "+intent.slots.partNo.value+". You may now print another part.";
+		}
+		else{
+			var speechOutput = "Printing "+intent.slots.qty.value+" copies of the label "+intent.slots.partNo.value+". You may now print another part.";
+
+		}
+		var repromptOut = "Say another part Number or tell me to stop.";
+		responsetwo.ask(speechOutput,repromptOut);
 	});
 };
 
@@ -79,7 +84,11 @@ var handleNextPrintRequest = function(intent, session, response){
 		return;	
 	}*/
 	
-	var result = postToUrl( intent.slots.partNo.value, intent.slots.qty.value , function(){});
+	var result = postToUrl( intent,session, response , function(){
+		
+	});
+	
+	
 };
 
 
@@ -94,6 +103,10 @@ LabelPrinter.prototype.eventHandlers.onLaunch = function(launchRequest, session,
 	response.ask(output, reprompt);
 };
 
+LabelPrinter.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
+	
+}
+	
 
 
 
