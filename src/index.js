@@ -108,7 +108,7 @@ var postToUrl = function(intent, session, responsetwo){
 	}
 };
 
-
+//print intent handler
 var handleNextPrintRequest = function(intent, session, response){	
 	
 	var result = postToUrl( intent,session, response);	
