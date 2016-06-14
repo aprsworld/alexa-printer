@@ -7,7 +7,6 @@ var http       = require('http')
 	  "amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMNWY4AY66FUR7ILBWANIHQN73QHT67AIQLELNW3B5COWYCIEZEYZSBNPZA2KR2FZ2IFUNGV6LAE6ELGWWWNHQINNHZXOKGZJREOSZX63ESOV6M7ED2VYKLIK5C3DPJ2I2FP4FTOISI5WHEEHS5MEOOGQEY5KFM5YFPAZ6QBF5GTZIGMYGBOBI"
 	  ];
 
-var resultsObj = {};
 //constructor
 var LabelPrinter = function(){
 	AlexaSkill.call(this, APP_ID);
@@ -18,7 +17,7 @@ LabelPrinter.prototype.constructor = LabelPrinter;
 
 //intent handlers
 LabelPrinter.prototype.intentHandlers = {
-	"printer": function(intent, session, response){	
+	"printer": function(intent, session, response){	//when user says "print {qty} copies of {partNo}" Alexa prints the labels
 		//check authorized user array for userId
 		if(authorizedUsers.indexOf(session.user.userId) > -1){	
 			handleNextPrintRequest(intent, session, response);		
@@ -28,17 +27,17 @@ LabelPrinter.prototype.intentHandlers = {
 			response.tell(speechOutput);
 		}
 	},
-	"AMAZON.StopIntent":function(intent, session, response){
+	"AMAZON.StopIntent":function(intent, session, response){ //When user says, "stop" Alexa ends the session
 		var speechOutput = "Ending Session";	
 		response.tell(speechOutput);
 	},
-	"AMAZON.HelpIntent":function(intent, session, response){
+	"AMAZON.HelpIntent":function(intent, session, response){ //when user says, "help" Alexa offers help
 		var speechOutput = "Say the name of a part number and the quantity. For example. please print two copies of six five seven three";
 		var repromptOutput = "Say the name of a part and quantity that you wish to print."
 		response.ask(speechOutput, repromptOutput);
 
 	},
-	"AMAZON.CancelIntent":function(intent, session, response){
+	"AMAZON.CancelIntent":function(intent, session, response){ //when user says, "cancel", the current intent is cancelled
 		var speechOutput = "Listening for a new part number and quantity...";
 		var repromptOutput = "Say the name of a part number and the quantity. For example. please print two copies of six five seven three"
 		response.ask(speechOutput, repromptOutput);
@@ -53,31 +52,28 @@ var synthNumber = function(number){
 }
 
 //function in charge of posting to the URL once the part number and qty are established via the voice command
-var postToUrl = function(intent, session, responsetwo, callback){
+var postToUrl = function(intent, session, responsetwo){
 	//our dynamic url
 	var partNo = intent.slots.partNo.value;
 	var qty =  intent.slots.qty.value;
-	if(parseInt(intent.slots.qty.value, 10) > 10){
-		var speechOutput = "I only allow labels to be printed 10 at a time. Please try again.";
+	if(parseInt(intent.slots.qty.value, 10) > 10 || parseInt(intent.slots.qty.value, 10) == 0){
+		var speechOutput = "Please tell me a valid number of copies to print, I will only print up to 10 labels at a time";
 		var repromptOut = "Say the name of a part number and the quantity. For example. please print two copies of six five seven three";
 		responsetwo.ask(speechOutput,repromptOut);
 	}
 	else{
 		var printUrl = function(partNo, qty){
-			//return "http://charlie.aprsworld.com/glabel/bin/?partNumber=APRS"+partNo+"&nCopies="+qty+"&printer=0";
 			return "http://92068.aprsworld.com:8160/glabel/bin/?partNumber=APRS"+partNo+"&nCopies="+qty+"&printer=0";
 		};
 		console.log(session.user.userId);
 		request(printUrl(partNo, qty), function ( error, response, body) {
 			//check if error
 			if(error){
-				resultsObj.error = error;
 
 				return console.log('Error:', error);	
 			}
 			//check for 200 status code
 			if(response.statusCode !== 200){
-				resultsObj.statusCode = response.statusCode;
 
 				return console.log('Invalid Status Code Returned:', response.statusCode);
 			}
@@ -111,8 +107,7 @@ var postToUrl = function(intent, session, responsetwo, callback){
 
 var handleNextPrintRequest = function(intent, session, response){	
 	
-	var result = postToUrl( intent,session, response , function(){});
-	
+	var result = postToUrl( intent,session, response);	
 	
 };
 
@@ -127,10 +122,6 @@ LabelPrinter.prototype.eventHandlers.onLaunch = function(launchRequest, session,
 	response.ask(output, reprompt);
 };
 
-LabelPrinter.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-	
-}
-	
 exports.handler = function(event, context) {
     var skill = new LabelPrinter();
     skill.execute(event, context);
