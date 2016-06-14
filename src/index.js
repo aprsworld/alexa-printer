@@ -11,6 +11,7 @@ var http       = require('http')
 var LabelPrinter = function(){
 	AlexaSkill.call(this, APP_ID);
 };
+
 //extend the alexaSkill prototype
 LabelPrinter.prototype = Object.create(AlexaSkill.prototype);
 LabelPrinter.prototype.constructor = LabelPrinter;
@@ -52,6 +53,9 @@ var synthNumber = function(number){
 }
 
 //function in charge of posting to the URL once the part number and qty are established via the voice command
+//since node runs asyncronously, the response object must be created inside the request callback function. This
+//will force the URL to be hit before alexa responds which means we should always have a part number print when 
+//it is supposed to.
 var postToUrl = function(intent, session, responsetwo){
 	//our dynamic url
 	var partNo = intent.slots.partNo.value;
@@ -83,8 +87,8 @@ var postToUrl = function(intent, session, responsetwo){
 
 			//gets json response from URL and tells user whether part number is valid or not
 			if(info[0].result === "valid"){
-
-				if(parseInt(intent.slots.qty.value, 10) < 1 || typeof parseInt(intent.slots.qty.value, 10) === "undefined" || isNaN(parseInt(intent.slots.qty.value, 10))){
+				//
+				if(parseInt(intent.slots.qty.value, 10) === 1 || typeof parseInt(intent.slots.qty.value, 10) === "undefined" || isNaN(parseInt(intent.slots.qty.value, 10))){
 					intent.slots.qty.value = 1;	
 					var speechOutput = "Printing "+intent.slots.qty.value+" copy of the label "+synthNumber(intent.slots.partNo.value)+". You may now print another part.";
 				}
