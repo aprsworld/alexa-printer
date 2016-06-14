@@ -15,11 +15,8 @@ LabelPrinter.prototype.constructor = LabelPrinter;
 
 //intent handlers
 LabelPrinter.prototype.intentHandlers = {
-	"printer": function(intent, session, response){
-		
-		handleNextPrintRequest(intent, session, response);
-		
-		
+	"printer": function(intent, session, response){	
+		handleNextPrintRequest(intent, session, response);		
 	},
 	"AMAZON.StopIntent":function(intent, session, response){
 		var speechOutput = "Ending Session";	
@@ -64,17 +61,27 @@ var postToUrl = function(intent, session, responsetwo, callback){
         	return console.log('Invalid Status Code Returned:', response.statusCode);
 		}
 		//nothing failed - print body
-		console.log(body);
-		if(parseInt(intent.slots.qty.value, 10) < 1 || typeof parseInt(intent.slots.qty.value, 10) === "undefined" || isNaN(parseInt(intent.slots.qty.value, 10))){
-		intent.slots.qty.value = 1;	
-			var speechOutput = "Printing "+intent.slots.qty.value+" copy of the label "+intent.slots.partNo.value+". You may now print another part.";
+		var info = JSON.parse(body);
+		console.log(info);
+		
+		//gets json response from URL and tells user whether part number is valid or not
+		if(info[0].result === "valid"){
+			if(parseInt(intent.slots.qty.value, 10) < 1 || typeof parseInt(intent.slots.qty.value, 10) === "undefined" || isNaN(parseInt(intent.slots.qty.value, 10))){
+			intent.slots.qty.value = 1;	
+				var speechOutput = "Printing "+intent.slots.qty.value+" copy of the label "+intent.slots.partNo.value+". You may now print another part.";
+			}
+			else{
+				var speechOutput = "Printing "+intent.slots.qty.value+" copies of the label "+intent.slots.partNo.value+". You may now print another part.";
+
+			}
+			var repromptOut = "Say another part Number or tell me to stop.";
+			responsetwo.ask(speechOutput,repromptOut);
 		}
 		else{
-			var speechOutput = "Printing "+intent.slots.qty.value+" copies of the label "+intent.slots.partNo.value+". You may now print another part.";
-
+			var speechOutput = "I'm sorry, I either did not understand you, or "+intent.slots.partNo.value+" is not a valid part." ;
+			var repromptOut = "Say another part Number or tell me to stop.";
+			responsetwo.ask(speechOutput,repromptOut);
 		}
-		var repromptOut = "Say another part Number or tell me to stop.";
-		responsetwo.ask(speechOutput,repromptOut);
 	});
 };
 
