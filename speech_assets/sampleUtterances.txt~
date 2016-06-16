@@ -1,54 +1,23 @@
 printer please print {partNo} times {qty}
-printer please print APRS {partNo} times {qty}
-
 printer print {partNo} times {qty}
-printer print APRS {partNo} times {qty}
-
 printer please print {partNo}
-printer please print APRS {partNo}
-
 printer print {partNo}
-printer print APRS {partNo}
-
 printer please print {qty} copies of {partNo}
-printer please print {qty} copies of APRS {partNo}
-
 printer please print {qty} copies {partNo}
-printer please print {qty} copies APRS {partNo}
-
-
 printer print {qty} copies of {partNo}
-printer print {qty} copies of APRS {partNo}
-
 printer print {qty} copies {partNo}
-printer print {qty} copies APRS {partNo}
-
 printer print {qty} copies of APRS {partNo}
 printer please print {qty} copies of APRS {partNo}
-
 printer print {qty} copy of APRS {partNo}
 printer please print {qty} copy of APRS {partNo}
-
 printer print {qty} copy of APRS {partNo}
 printer print {qty} copy of {partNo}
-
 printer print {partNo}
 printer print APRS {partNo}
-
-printer print quantity {qty} of {partNo}
-printer print quantity {qty} of APRS {partNo}
-
+printer print APRS {partNo} {qty}
+printer print quantity {qty} or {partNo}
 printer print {partNo} quantity {qty}
-printer print APRS {partNo} quantity {qty}
-
 printer please print {partNo} quantity {qty}
-printer please print APRS {partNo} quantity {qty}
-
-
-printer print {qty} of {partNo}
-printer print {qty} of APRS {partNo}
-
-
 
 AMAZON.StopIntent stop
 AMAZON.StopIntent go away
