@@ -6,8 +6,21 @@ printer please print {qty} copies of {partNo}
 printer please print {qty} copies {partNo}
 printer print {qty} copies of {partNo}
 printer print {qty} copies {partNo}
+printer print {qty} copies of APRS {partNo}
+printer please print {qty} copies of APRS {partNo}
+printer print {qty} copy of APRS {partNo}
+printer please print {qty} copy of APRS {partNo}
+printer print {qty} copy of APRS {partNo}
+printer print {qty} copy of {partNo}
+printer print {partNo}
+printer print APRS {partNo}
+printer print APRS {partNo} {qty}
+printer print quantity {qty} or {partNo}
+printer print {partNo} quantity {qty}
+printer please print {partNo} quantity {qty}
 
 AMAZON.StopIntent stop
 AMAZON.StopIntent go away
+AMAZON.StopIntent go away woman
 AMAZON.StopIntent quit
 AMAZON.StopIntent exit
