@@ -20,13 +20,13 @@ LabelPrinter.prototype.constructor = LabelPrinter;
 LabelPrinter.prototype.intentHandlers = {
 	"printer": function(intent, session, response){	//when user says "print {qty} copies of {partNo}" Alexa prints the labels
 		//check authorized user array for userId
-		if(authorizedUsers.indexOf(session.user.userId) > -1){	
+		//if(authorizedUsers.indexOf(session.user.userId) > -1){	
 			handleNextPrintRequest(intent, session, response);		
-		}
+		/*}
 		else{
 			var speechOutput = "I am sorry, you are not authorized";
 			response.tell(speechOutput);
-		}
+		}*/
 	},
 	"AMAZON.StopIntent":function(intent, session, response){ //When user says, "stop" Alexa ends the session
 		var speechOutput = "Ending Session";	
@@ -90,10 +90,10 @@ var postToUrl = function(intent, session, responsetwo){
 				//
 				if(parseInt(intent.slots.qty.value, 10) === 1 || typeof parseInt(intent.slots.qty.value, 10) === "undefined" || isNaN(parseInt(intent.slots.qty.value, 10))){
 					intent.slots.qty.value = 1;	
-					var speechOutput = "Printing "+intent.slots.qty.value+" copy of the label "+synthNumber(intent.slots.partNo.value)+". You may now print another part.";
+					var speechOutput = "Printing... ";
 				}
 				else{
-					var speechOutput = "Printing "+intent.slots.qty.value+" copies of the label "+synthNumber(intent.slots.partNo.value)+". You may now print another part.";
+					var speechOutput = "Printing... ";
 
 				}
 				var repromptOut = "Say another part Number or tell me to stop.";
